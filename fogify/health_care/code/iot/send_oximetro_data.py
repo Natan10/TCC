@@ -35,24 +35,6 @@ def fake_data_node_2():
  
   return data
 
-# def fake_data():
-#   data = []
-#   file = open("dados_oximetro_sensor.csv","r")
-#   oximetro_data = file.readline()
-#   data.append(oximetro_data)
-#   file.close()  
-#   return data
-
-# def send_data_to_edge(data): 
-#   logging.info(f"data: {data}")
-#   for fog_node in ['mec-svc-1','mec-svc-2']:
-#     try:
-#       # enviando dados para os fog nodes
-#       post(f"http://tasks.{fog_node}.{services_network[fog_node]}:7946/", data=str(data), timeout=2)
-#       logging.info("data sending...")
-#     except:
-#       continue
-
 def send_data_to_edge(data_node_1, data_node_2): 
   fog_nodes = ['mec-svc-1','mec-svc-2']
   sent_data = {'mec-svc-1': False, 'mec-svc-2': False}
@@ -83,13 +65,6 @@ def send_data_to_edge(data_node_1, data_node_2):
       logging.info(f"{datetime.now()} - dado enviado ao fog_node 2")
     except:
       logging.info(f"{datetime.now()} - erro ao enviar dado para o fog_node 2!")
-
-    # if not sent_data['mec-svc-2']:
-    #   try:
-    #     post("http://tasks.cloud-server.internet:7946/", data=str(data_node_2))
-    #     logging.info("dado node_2 enviado a cloud!")
-    #   except:
-    #     logging.info("erro ao enviar dado node_2 para cloud!")
 
 
 def send_oximetro_data_to_edge():
