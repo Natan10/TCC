@@ -1,0 +1,118 @@
+services:
+  oxi-workload:
+    image: iot_node
+  cloud-server:
+    image: cloud_node
+  mec-svc-1:
+    image: fog_node
+  mec-svc-2:
+    image: fog_node
+version: "3.7"
+x-fogify:
+  networks:
+    - downlink:
+        bandwidth: 5Mbps
+        latency:
+          delay: 50ms
+      name: internet
+      uplink:
+        bandwidth: 10Mbps
+        drop: 0.1%
+        latency:
+          delay: 50ms
+    - bidirectional:
+        bandwidth: 100Mbps
+        drop: 0.1%
+        latency:
+          delay: 5ms
+      name: edge-net-1
+    - bidirectional:
+        bandwidth: 100Mbps
+        drop: 0.1%
+        latency:
+          delay: 5ms
+      name: edge-net-2
+  nodes:
+    - capabilities:
+        memory: 4G
+        processor:
+          clock_speed: 1400
+          cores: 4
+      name: cloud-server-node
+    - capabilities:
+        memory: 2G
+        processor:
+          clock_speed: 1400
+          cores: 2
+      name: edge-node
+    - capabilities:
+        memory: 0.5G
+        processor:
+          clock_speed: 700
+          cores: 1
+      name: oxi-node
+  topology:
+    - label: cloud-server
+      networks:
+        - internet
+      node: cloud-server-node
+      service: cloud-server
+      replicas: 1
+
+    - label: mec-svc-1
+      networks:
+        - edge-net-1
+        - internet
+      node: edge-node
+      replicas: 1
+      service: mec-svc-1
+
+    - label: mec-svc-2
+      networks:
+        - edge-net-2
+        - internet
+      node: edge-node
+      replicas: 1
+      service: mec-svc-2
+
+    - label: oxi-workload-1
+      networks:
+        - edge-net-1
+        - internet
+      node: oxi-node
+      replicas: 1
+      service: oxi-workload
+
+    - label: oxi-workload-2
+      networks:
+        - edge-net-2
+        - internet
+      node: oxi-node
+      replicas: 1
+      service: oxi-workload
+  scenarios:
+    - name: cenario_1
+      actions:
+        - time: 30
+          instance_type: mec-svc-1
+          instances: 1
+          action:
+            type: network
+            parameters:
+              network: edge-net-1
+              bidirectional:
+                bandwidth: 50Mbps
+                drop: 0.1%
+                latency:
+                  delay: 2000ms
+        - time: 40
+          instance_type: mec-svc-1
+          instances: 1
+          action:
+            type: network
+            parameters:
+              network: edge-net-1
+              bidirectional:
+                bandwidth: 50Mbps
+                latency:
+                  delay: 10000ms
