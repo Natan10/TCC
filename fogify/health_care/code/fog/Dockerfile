@@ -9,7 +9,6 @@ RUN git clone https://github.com/opsengine/cpulimit/
 WORKDIR cpulimit
 RUN make && cp src/cpulimit /usr/bin
 
-
 RUN mkdir /app
 WORKDIR /app
 ADD requirements.txt /app/
@@ -25,12 +24,5 @@ EXPOSE 4789
 # porta para comunicação de gerenciamento de cluster
 EXPOSE 2377
 
-
 ADD . /app/
-
-# RUN chmod 0644 /app/cronjobs
-# RUN service rsyslog start
-# RUN chmod +x /app/entrypoint.sh
-# RUN /bin/bash /app/entrypoint.sh
-
 CMD ["python", "edge_server.py"]

@@ -9,7 +9,6 @@ RUN git clone https://github.com/opsengine/cpulimit/
 WORKDIR cpulimit
 RUN make && cp src/cpulimit /usr/bin
 
-
 RUN mkdir /app
 WORKDIR /app
 ADD requirements.txt /app/
@@ -26,5 +25,4 @@ EXPOSE 4789
 EXPOSE 2377
 
 ADD . /app/
-
 CMD ["python", "cloud_server.py"]
